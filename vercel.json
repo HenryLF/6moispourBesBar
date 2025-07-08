@@ -3,8 +3,17 @@
   "builds": [
     {
       "src": "dist/app.js",
-      "use": "@vercel/node",
-      "config": { "includeFiles": ["dist/views/**", "dist/public/**"] }
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/public/(.*)",
+      "dest": "dist/public/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "dist/app.js"
     }
   ]
 }
