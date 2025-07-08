@@ -1,0 +1,33 @@
+{
+  "name": "sixmoispourbesbar",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build:server": "tsc -p tsconfig.json",
+    "build:tailwind": "tailwindcss -i ./src/global.css -o ./src/public/style.css",
+    "copy:assets": "cpx \"src/**/*.{html,css,json,png,jpg,svg,ejs}\" dist/",
+    "build": "npm run build:server && npm run build:tailwind && npm run copy:assets",
+    "start": "node dist/app.js",
+    "dev": "concurrently \"npm:dev:*\"",
+    "dev:app": "nodemon --watch src -e ts src/app.ts",
+    "dev:tailwind": "tailwindcss -i ./src/global.css -o ./src/public/style.css --watch"
+  },
+  "description": "",
+  "dependencies": {
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "googleapis": "^150.0.1"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.10",
+    "concurrently": "^9.2.0",
+    "cpx": "^1.5.0",
+    "ejs": "^3.1.10",
+    "nodemon": "^3.1.10",
+    "tailwindcss": "^4.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
