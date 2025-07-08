@@ -24,3 +24,5 @@ app.get("/", async (_, res) => {
 app.listen(PORT, () => {
   console.log(`listening port ${PORT}`);
 });
+
+module.exports = app;
