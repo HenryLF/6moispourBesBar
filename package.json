@@ -4,9 +4,8 @@
   "main": "index.js",
   "scripts": {
     "build:server": "tsc -p tsconfig.json",
-    "build:tailwind": "tailwindcss -i ./src/global.css -o ./src/public/style.css",
     "copy:assets": "cpx \"src/**/*.{html,css,json,png,jpg,svg,ejs}\" dist/",
-    "build": "npm run build:server && npm run build:tailwind && npm run copy:assets",
+    "build": "npm run build:server  && npm run copy:assets",
     "start": "node dist/app.js",
     "dev": "concurrently \"npm:dev:*\"",
     "dev:app": "nodemon --watch src -e ts src/app.ts",
