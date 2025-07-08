@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build:server": "tsc -p tsconfig.json",
-    "copy:assets": "cpx \"src/**/*.{html,css,json,png,jpg,svg,ejs}\" dist/",
+    "copy:assets": "cpx \"src/*/*.{html,css,json,png,jpg,svg,ejs}\" dist/",
     "build": "npm run build:server  && npm run copy:assets",
     "start": "node dist/app.js",
     "dev": "concurrently \"npm:dev:*\"",
