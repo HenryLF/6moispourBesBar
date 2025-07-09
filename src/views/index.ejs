@@ -13,13 +13,16 @@
   </head>
   <body
     x-data="{index:0,
+        dark : matchMedia('(prefers-color-scheme: dark)'),
         n : <%=videos.length%>,
         touchEvent : null,
         incrementIndex(x){
-          if(this.index + x < 0 || this.index + x >= this.n ) return
+          if(this.index + x < 0 || this.index + x >= this.n ) return false
           this.index +=x
+          return true
         }
       }"
+    :class="dark && 'dark'"
     @wheel.window="$event.deltaY > 100 ? incrementIndex(1) :  $event.deltaY < -100 && incrementIndex(-1)"
     @touchstart.window="touchEvent = { x: $event.touches[0].clientX ,y: $event.touches[0].clientY}"
     @touchmove.window=" $event.preventDefault()
@@ -32,28 +35,34 @@
                   ['ArrowDown' , 'ArrowLeft'].includes($event.key) && incrementIndex(-1) ;"
   >
     <header
-      class="w-full motion"
+      class="w-full motion p-1"
       @mouseover="hidden=false"
       @mouseleave="hidden=true"
       x-data="{hidden : false}"
       x-init="setTimeout(()=>hidden=true , 1_000)"
     >
       <section
-        class="size-full motion"
-        x-bind:class="hidden ? '-translate-y-full' : ''"
+        class="size-full motion flex items-center justify-between"
+        x-bind:class="hidden ? '-translate-y-[110%]' : ''"
       >
         <h1>6 mois pour BESBAR</h1>
+        <image
+          @click="dark = !dark"
+          :src="dark ? '/dark.svg':'/light.svg'"
+          class="size-main mr-smaller"
+        >
+        </image>
       </section>
     </header>
 
-    <div class="grid grid-cols-10 grid-rows-3 w-full">
+    <main class="grid grid-cols-10 grid-rows-3 w-full">
       <div
-        class="col-span-full row-span-1 size-full"
-        @click="incrementIndex(-1)"
+        class="col-span-full row-span-1 size-full touch-area"
+        @click="incrementIndex(-1)&&triggerAnim($el,'touch-area')"
       ></div>
       <aside
-        class="col-span-1 row-span-1 size-full"
-        @click="incrementIndex(-1)"
+        class="col-span-1 row-span-1 size-full touch-area"
+        @click="incrementIndex(-1)&&triggerAnim($el,'touch-area') "
       ></aside>
       <section class="w-full col-span-8 aspect-video">
         <% videos.forEach((video , id) => { %>
@@ -74,27 +83,30 @@
         <% }) %>
       </section>
       <aside
-        class="col-span-1 row-span-1 size-full"
-        @click="incrementIndex(1)"
+        class="col-span-1 row-span-1 size-full touch-area"
+        @click="incrementIndex(1)&&triggerAnim($el,'touch-area')"
       ></aside>
       <div
-        class="col-span-full row-span-1 size-full"
-        @click="incrementIndex(1)"
+        class="col-span-full row-span-1 size-full touch-area"
+        @click="incrementIndex(1)&&triggerAnim($el,'touch-area')"
       >
-        <h4 class="self-end text-right" x-text="(index+1) + '/' + n"></h4>
+        <h4
+          class="self-end text-right opacity-100"
+          x-text="(index+1) + '/' + n"
+        ></h4>
       </div>
-    </div>
+    </main>
 
-    <div class="flex-col flex-1 w-full" @click="incrementIndex(1)"></div>
     <footer
       class="w-full motion"
-      x-data="{hidden : true}"
-      @mouseover=" hidden = false"
+      x-data="{hidden : false}"
+      @mouseover=" hidden=false"
       @mouseleave="hidden=true"
+      x-init="setTimeout(()=>hidden=true , 1_000)"
     >
       <section
         class="size-full motion flex justify-center"
-        x-bind:class="hidden ? 'translate-y-full' : ''"
+        x-bind:class="hidden ? 'translate-y-[120%]' : ''"
       >
         <h4>Fait à Belleville pour un gars de BesBar</h4>
       </section>
@@ -121,6 +133,11 @@
         };
 
         if (YT.Player) window.onYouTubeIframeAPIReady();
+      }
+
+      function triggerAnim(el, className) {
+        el.classList.remove(className);
+        setTimeout(() => el.classList.add(className), 1);
       }
     </script>
   </body>

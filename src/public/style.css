@@ -20,9 +20,11 @@
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
-    --color-background: #000000;
-    --color-main: #bebbbb;
+    --color-dark: #000000;
+    --color-light: #bebbbb;
+    --spacing-smaller: clamp(5px, 1.5vw, 20px);
     --spacing-small: clamp(10px, 3vw, 50px);
+    --spacing-main: clamp(20px, 5vw, 150px);
   }
 }
 @layer base {
@@ -186,6 +188,9 @@
   .row-span-1 {
     grid-row: span 1 / span 1;
   }
+  .mr-smaller {
+    margin-right: var(--spacing-smaller);
+  }
   .flex {
     display: flex;
   }
@@ -205,6 +210,10 @@
     width: 100%;
     height: 100%;
   }
+  .size-main {
+    width: var(--spacing-main);
+    height: var(--spacing-main);
+  }
   .w-full {
     width: 100%;
   }
@@ -214,8 +223,24 @@
   .border-collapse {
     border-collapse: collapse;
   }
+  .-translate-y-\[110\%\] {
+    --tw-translate-y: calc(110% * -1);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
   .-translate-y-full {
     --tw-translate-y: -100%;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .translate-y-\[110\%\] {
+    --tw-translate-y: 110%;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .translate-y-\[120\%\] {
+    --tw-translate-y: 120%;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .translate-y-\[160\%\] {
+    --tw-translate-y: 160%;
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
   .translate-y-full {
@@ -234,6 +259,9 @@
     --tw-scale-z: 100%;
     scale: var(--tw-scale-x) var(--tw-scale-y);
   }
+  .transform {
+    transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
+  }
   .resize {
     resize: both;
   }
@@ -249,6 +277,12 @@
   .flex-col {
     flex-direction: column;
   }
+  .items-center {
+    align-items: center;
+  }
+  .justify-between {
+    justify-content: space-between;
+  }
   .justify-center {
     justify-content: center;
   }
@@ -258,6 +292,9 @@
   .border {
     border-style: var(--tw-border-style);
     border-width: 1px;
+  }
+  .p-1 {
+    padding: calc(var(--spacing) * 1);
   }
   .text-right {
     text-align: right;
@@ -294,8 +331,8 @@ html {
 }
 body {
   all: unset;
-  background-color: var(--color-background);
-  color: var(--color-main);
+  background-color: var(--color-dark);
+  color: var(--color-light);
   height: 100vh;
   overflow: hidden;
   position: relative;
@@ -303,6 +340,17 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: var(--color-light);
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  --tw-duration: 400ms;
+  transition-duration: 400ms;
+  --tw-ease: var(--ease-in-out);
+  transition-timing-function: var(--ease-in-out);
+  &:where(.dark, .dark *) {
+    background-color: var(--color-dark);
+  }
 }
 .iframe {
   width: 100%;
@@ -312,11 +360,13 @@ header {
   position: absolute;
   overflow: hidden;
   top: 0;
+  padding: calc(var(--spacing) * 1);
 }
 footer {
   position: absolute;
   bottom: 0;
   overflow: hidden;
+  padding: calc(var(--spacing) * 1);
 }
 h1 {
   padding: var(--spacing-small);
@@ -326,6 +376,17 @@ h1 {
   --tw-font-weight: var(--font-weight-extrabold);
   font-weight: var(--font-weight-extrabold);
   font-style: italic;
+  color: var(--color-dark);
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  --tw-duration: 400ms;
+  transition-duration: 400ms;
+  --tw-ease: var(--ease-in-out);
+  transition-timing-function: var(--ease-in-out);
+  &:where(.dark, .dark *) {
+    color: var(--color-light);
+  }
 }
 h4 {
   padding: calc(var(--spacing) * 1);
@@ -333,12 +394,36 @@ h4 {
   line-height: var(--tw-leading, var(--text-xs--line-height));
   font-family: var(--font-mono);
   font-style: italic;
+  color: var(--color-dark);
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  --tw-duration: 400ms;
+  transition-duration: 400ms;
+  --tw-ease: var(--ease-in-out);
+  transition-timing-function: var(--ease-in-out);
+  &:where(.dark, .dark *) {
+    color: var(--color-light);
+  }
 }
 section {
   border-style: var(--tw-border-style);
   border-width: 2px;
-  border-color: var(--color-main);
-  background-color: var(--color-background);
+  border-color: var(--color-dark);
+  &:where(.dark, .dark *) {
+    border-color: var(--color-light);
+  }
+  background-color: var(--color-light);
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  --tw-duration: 400ms;
+  transition-duration: 400ms;
+  --tw-ease: var(--ease-in-out);
+  transition-timing-function: var(--ease-in-out);
+  &:where(.dark, .dark *) {
+    background-color: var(--color-dark);
+  }
   overflow-y: hidden;
 }
 .motion {
@@ -349,6 +434,17 @@ section {
   transition-duration: 1000ms;
   --tw-ease: var(--ease-in-out);
   transition-timing-function: var(--ease-in-out);
+}
+.touch-area {
+  animation: blink 400ms ease-in-out;
+}
+@keyframes blink {
+  10%, 90% {
+    background-image: radial-gradient(#bebbbb10, #00000000 30%);
+  }
+  50% {
+    background-image: radial-gradient(#bebbbb15, #00000000 90%);
+  }
 }
 @property --tw-translate-x {
   syntax: "*";
@@ -379,6 +475,26 @@ section {
   syntax: "*";
   inherits: false;
   initial-value: 1;
+}
+@property --tw-rotate-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-z {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-y {
+  syntax: "*";
+  inherits: false;
 }
 @property --tw-border-style {
   syntax: "*";
@@ -411,6 +527,11 @@ section {
       --tw-scale-x: 1;
       --tw-scale-y: 1;
       --tw-scale-z: 1;
+      --tw-rotate-x: initial;
+      --tw-rotate-y: initial;
+      --tw-rotate-z: initial;
+      --tw-skew-x: initial;
+      --tw-skew-y: initial;
       --tw-border-style: solid;
       --tw-outline-style: solid;
       --tw-duration: initial;

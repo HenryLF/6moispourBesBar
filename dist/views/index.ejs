@@ -41,9 +41,15 @@
         <h1>6 mois pour BESBAR</h1>
       </section>
     </header>
-    <div class="flex-col flex-1 w-full" @click="incrementIndex(-1)"></div>
+    <div
+      class="flex-col flex-1 w-full touch-area"
+      @click="incrementIndex(-1)"
+    ></div>
     <div class="grid grid-cols-15 w-full">
-      <aside class="col-span-1 size-full" @click="incrementIndex(-1)"></aside>
+      <aside
+        class="col-span-1 size-full touch-area"
+        @click="incrementIndex(-1)"
+      ></aside>
       <section class="w-full col-span-13 aspect-video">
         <% videos.forEach((video , id) => { %>
         <template x-if="Math.abs(<%=id%> - index)<2">
@@ -81,6 +87,7 @@
         <h4>Made in BesBar in order to BesBar</h4>
       </section>
     </footer>
+
     <script>
       function initPlayer(el, videoId) {
         var player;
@@ -96,6 +103,7 @@
             },
             events: {
               onReady: function (event) {
+                console.log(el.id, "ready");
                 window.videoPlayer = player;
               },
             },

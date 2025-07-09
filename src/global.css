@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #000000;
-  --color-main: #bebbbb;
+  --color-dark: #000000;
+  --color-light: #bebbbb;
   --color-contrast: #ee6352;
 
   --spacing-smaller: clamp(5px, 1.5vw, 20px);
@@ -10,19 +10,22 @@
   --spacing-main: clamp(20px, 5vw, 150px);
   --spacing-large: clamp(40px, 10vw, 250px);
 }
+@custom-variant dark (&:where(.dark, .dark *));
+
 html {
   all: unset;
 }
 
 body {
   all: unset;
-  background-color: var(--color-background);
-  color: var(--color-main);
+  background-color: var(--color-dark);
+  color: var(--color-light);
   height: 100vh;
   overflow: hidden;
   position: relative;
 
-  @apply flex  flex-col items-center justify-center;
+  @apply flex flex-col items-center justify-center;
+  @apply bg-light dark:bg-dark transition-colors duration-400 ease-in-out;
 }
 
 .iframe {
@@ -33,28 +36,48 @@ header {
   position: absolute;
   overflow: hidden;
   top: 0;
+  @apply p-1;
 }
 footer {
   position: absolute;
   bottom: 0;
   overflow: hidden;
+  @apply p-1;
 }
 
 h1 {
   @apply text-4xl p-small;
   @apply font-extrabold font-mono italic;
+  @apply text-dark dark:text-light transition-colors duration-400 ease-in-out;
 }
 
 h4 {
   @apply text-xs p-1;
   @apply font-mono italic;
+  @apply text-dark dark:text-light transition-colors duration-400 ease-in-out;
 }
 
 section {
-  @apply border-2 border-main bg-background;
+  @apply border-2 border-dark dark:border-light;
+  @apply bg-light dark:bg-dark transition-colors duration-400 ease-in-out;
   @apply overflow-y-hidden;
 }
 
 .motion {
   @apply transition-transform duration-1000 ease-in-out;
+}
+
+.touch-area {
+  animation: blink 400ms ease-in-out;
+}
+
+@keyframes blink {
+  10%,
+  90% {
+
+    background-image: radial-gradient(#bebbbb10, #00000000 30%);
+  }
+  50% {
+    background-image: radial-gradient(#bebbbb15, #00000000 90%);
+  }
 }
