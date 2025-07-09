@@ -22,3 +22,4 @@ app.get("/", async (_, res) => {
 app.listen(PORT, () => {
     console.log(`listening port ${PORT}`);
 });
+exports.default = app;

@@ -25,4 +25,4 @@ app.listen(PORT, () => {
   console.log(`listening port ${PORT}`);
 });
 
-module.exports = app;
+export default app;
