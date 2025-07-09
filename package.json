@@ -2,13 +2,14 @@
   "name": "sixmoispourbesbar",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "build:server": "tsc -p tsconfig.json",
     "copy:assets": "cpx \"src/*/*.{html,css,json,png,jpg,svg,ejs}\" dist/",
     "build": "npm run build:server  && npm run copy:assets",
-    "start": "node dist/app.js",
+    "start": "node dist/index.js",
     "dev": "concurrently \"npm:dev:*\"",
-    "dev:app": "nodemon --watch src -e ts src/app.ts",
+    "dev:app": "nodemon --watch src -e ts src/index.ts",
     "dev:tailwind": "tailwindcss -i ./src/global.css -o ./src/public/style.css --watch"
   },
   "description": "",

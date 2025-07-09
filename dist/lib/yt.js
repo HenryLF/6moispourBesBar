@@ -8,7 +8,6 @@ const youtubeAPI = googleapis_1.google.youtube({
     auth: YOUTUBE_API_KEY,
 });
 async function getVideo() {
-    console.log(YOUTUBE_API_KEY, PLAYLIST_ID);
     const playlist = await youtubeAPI.playlistItems.list({
         part: ["snippet"],
         playlistId: PLAYLIST_ID,
@@ -19,6 +18,5 @@ async function getVideo() {
         return [];
     }
     const videoIds = playlist.data.items?.map((it) => it.snippet?.resourceId?.videoId);
-    console.log((await youtubeAPI.videos.list({ part: ["player"], id: [videoIds[0]] })).data.items);
     return videoIds;
 }
