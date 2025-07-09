@@ -400,14 +400,27 @@ section {
   }
   overflow-y: hidden;
 }
-.motion {
-  transition-property: transform, translate, scale, rotate;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
-  --tw-duration: 1000ms;
-  transition-duration: 1000ms;
-  --tw-ease: var(--ease-in-out);
-  transition-timing-function: var(--ease-in-out);
+.motionPrev {
+  animation: motion-prev 200ms ease-out;
+}
+@keyframes motion-prev {
+  from {
+    transform: translate(0, -110%);
+  }
+  to {
+    transform: translate(0);
+  }
+}
+.motionNext {
+  animation: motion-next 200ms ease-out;
+}
+@keyframes motion-next {
+  from {
+    transform: translate(0, 110%);
+  }
+  to {
+    transform: translate(0);
+  }
 }
 .touch-area {
   animation: blink 400ms ease-in-out;

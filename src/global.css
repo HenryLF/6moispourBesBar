@@ -63,8 +63,29 @@ section {
   @apply overflow-y-hidden;
 }
 
-.motion {
-  @apply transition-transform duration-1000 ease-in-out;
+.motionPrev {
+  animation: motion-prev 200ms ease-out;
+}
+
+@keyframes motion-prev {
+  from {
+    transform: translate(0, -110%);
+  }
+  to {
+    transform: translate(0);
+  }
+}
+.motionNext {
+  animation: motion-next 200ms ease-out;
+}
+
+@keyframes motion-next {
+  from {
+    transform: translate(0, 110%);
+  }
+  to {
+    transform: translate(0);
+  }
 }
 
 .touch-area {

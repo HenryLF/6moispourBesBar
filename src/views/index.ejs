@@ -16,7 +16,9 @@
         dark : matchMedia('(prefers-color-scheme: dark)'),
         n : <%=videos.length%>,
         touchEvent : null,
+        next:true,
         incrementIndex(x){
+          this.next = x>0
           if(this.index + x < 0 || this.index + x >= this.n ) return false
           this.index +=x
           return true
@@ -69,10 +71,8 @@
         <template x-if=" Math.abs(<%=id%> - index)<2">
           <div
             class="size-full"
-            x-show="index == <%=id%>;"
-            x-transition:enter="transition duration-500 ease-in"
-            x-transition:enter-start="scale-95 opacity-0"
-            x-transition:enter-end="opacity-100 scale-100"
+            x-show="index == <%=id%>"
+            x-bind:class="index == <%=id%> && (next ? 'motionNext' : 'motionPrev')"
           >
             <div
               x-init="setTimeout(()=>initPlayer($el,'<%=video%>'),100)"
