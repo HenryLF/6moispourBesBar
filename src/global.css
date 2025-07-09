@@ -23,7 +23,6 @@ body {
   position: relative;
 
   @apply flex  flex-col items-center justify-center;
-  @apply px-small;
 }
 
 .iframe {

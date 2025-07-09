@@ -14,18 +14,25 @@
   <body
     x-data="{index:0,
         n : <%=videos.length%>,
+        touchEvent : null,
         incrementIndex(x){
           if(this.index + x < 0 || this.index + x > this.n ) return
           this.index +=x
         }
       }"
+    @scroll.window="$event.deltaY > 100 ? incrementIndex(1) :  $event.deltaY < -100 && incrementIndex(-1)"
+    @touchstart.window="touchEvent = {y: $event.clientX,x: $event.clientY}"
+    @touchend.window="console.log(touchEvent)"
+    @keyup.window="['ArrowUp' , 'ArrowRight'].includes($event.key) && incrementIndex(1) ;
+      ['ArrowDown' , 'ArrowLeft'].includes($event.key) && incrementIndex(-1) ;"
   >
     <header
       class="w-full motion"
-      x-data="{hidden : false}"
-      x-init="setTimeout(()=>hidden=true , 1_000)"
       @mouseover="hidden=false"
       @mouseleave="hidden=true"
+      x-data="{hidden : false}"
+      x-init="setTimeout(()=>hidden=true , 1_000)"
+      :text="touchEvent"
     >
       <section
         class="size-full motion"
@@ -36,13 +43,8 @@
     </header>
     <div class="flex-col flex-1 w-full" @click="incrementIndex(-1)"></div>
     <div class="grid grid-cols-15 w-full">
-      <aside class="col-span-1 size-full"  @click="incrementIndex(-1)"></aside>
-      <section
-        class="w-full col-span-13 aspect-video"
-        @wheel.window="$event.deltaY > 100 ? incrementIndex(1) :  $event.deltaY < -100 && incrementIndex(-1)"
-        @keyup.window="['ArrowUp' , 'ArrowRight'].includes($event.key) && incrementIndex(1) ;
-      ['ArrowDown' , 'ArrowLeft'].includes($event.key) && incrementIndex(-1) ;"
-      >
+      <aside class="col-span-1 size-full" @click="incrementIndex(-1)"></aside>
+      <section class="w-full col-span-13 aspect-video">
         <% videos.forEach((video , id) => { %>
         <template x-if="Math.abs(<%=id%> - index)<2">
           <div

@@ -174,8 +174,17 @@
   .col-span-1 {
     grid-column: span 1 / span 1;
   }
+  .col-span-8 {
+    grid-column: span 8 / span 8;
+  }
   .col-span-13 {
     grid-column: span 13 / span 13;
+  }
+  .col-span-full {
+    grid-column: 1 / -1;
+  }
+  .row-span-1 {
+    grid-row: span 1 / span 1;
   }
   .flex {
     display: flex;
@@ -185,6 +194,9 @@
   }
   .hidden {
     display: none;
+  }
+  .table {
+    display: table;
   }
   .aspect-video {
     aspect-ratio: var(--aspect-video);
@@ -198,6 +210,9 @@
   }
   .flex-1 {
     flex: 1;
+  }
+  .border-collapse {
+    border-collapse: collapse;
   }
   .-translate-y-full {
     --tw-translate-y: -100%;
@@ -219,8 +234,17 @@
     --tw-scale-z: 100%;
     scale: var(--tw-scale-x) var(--tw-scale-y);
   }
+  .resize {
+    resize: both;
+  }
+  .grid-cols-10 {
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+  }
   .grid-cols-15 {
     grid-template-columns: repeat(15, minmax(0, 1fr));
+  }
+  .grid-rows-3 {
+    grid-template-rows: repeat(3, minmax(0, 1fr));
   }
   .flex-col {
     flex-direction: column;
@@ -228,11 +252,28 @@
   .justify-center {
     justify-content: center;
   }
+  .self-end {
+    align-self: flex-end;
+  }
+  .border {
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+  }
+  .text-right {
+    text-align: right;
+  }
+  .underline {
+    text-decoration-line: underline;
+  }
   .opacity-0 {
     opacity: 0%;
   }
   .opacity-100 {
     opacity: 100%;
+  }
+  .outline {
+    outline-style: var(--tw-outline-style);
+    outline-width: 1px;
   }
   .transition {
     transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, visibility, content-visibility, overlay, pointer-events;
@@ -262,7 +303,6 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-inline: var(--spacing-small);
 }
 .iframe {
   width: 100%;
@@ -340,6 +380,16 @@ section {
   inherits: false;
   initial-value: 1;
 }
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@property --tw-outline-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
 @property --tw-duration {
   syntax: "*";
   inherits: false;
@@ -352,11 +402,6 @@ section {
   syntax: "*";
   inherits: false;
 }
-@property --tw-border-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
-}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
@@ -366,10 +411,11 @@ section {
       --tw-scale-x: 1;
       --tw-scale-y: 1;
       --tw-scale-z: 1;
+      --tw-border-style: solid;
+      --tw-outline-style: solid;
       --tw-duration: initial;
       --tw-ease: initial;
       --tw-font-weight: initial;
-      --tw-border-style: solid;
     }
   }
 }

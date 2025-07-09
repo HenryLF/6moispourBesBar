@@ -14,18 +14,29 @@
   <body
     x-data="{index:0,
         n : <%=videos.length%>,
+        touchEvent : null,
         incrementIndex(x){
-          if(this.index + x < 0 || this.index + x > this.n ) return
+          if(this.index + x < 0 || this.index + x >= this.n ) return
           this.index +=x
         }
       }"
+    @wheel.window="$event.deltaY > 100 ? incrementIndex(1) :  $event.deltaY < -100 && incrementIndex(-1)"
+    @touchstart.window="touchEvent = { x: $event.touches[0].clientX ,y: $event.touches[0].clientY}"
+    @touchmove.window=" $event.preventDefault()
+     let deltaY = touchEvent.y - $event.touches[0].clientY
+     if (Math.abs(deltaY) > 100){
+      deltaY > 0 ? incrementIndex(1) : incrementIndex(-1)
+      touchEvent.y =  $event.touches[0].clientY
+     }"
+    @keyup.window="['ArrowUp' , 'ArrowRight'].includes($event.key) && incrementIndex(1) ;
+                  ['ArrowDown' , 'ArrowLeft'].includes($event.key) && incrementIndex(-1) ;"
   >
     <header
       class="w-full motion"
-      x-data="{hidden : false}"
-      x-init="setTimeout(()=>hidden=true , 1_000)"
       @mouseover="hidden=false"
       @mouseleave="hidden=true"
+      x-data="{hidden : false}"
+      x-init="setTimeout(()=>hidden=true , 1_000)"
     >
       <section
         class="size-full motion"
@@ -34,22 +45,22 @@
         <h1>6 mois pour BESBAR</h1>
       </section>
     </header>
-    <div class="flex-col flex-1 w-full" @click="incrementIndex(-1)"></div>
-    <div class="grid grid-cols-15 w-full">
-      <aside class="col-span-1 size-full"  @click="incrementIndex(-1)"></aside>
-      <section
-        class="w-full col-span-13 aspect-video"
-        @wheel.window="$event.deltaY > 100 ? incrementIndex(1) :  $event.deltaY < -100 && incrementIndex(-1)"
-        @keyup.window="['ArrowUp' , 'ArrowRight'].includes($event.key) && incrementIndex(1) ;
-      ['ArrowDown' , 'ArrowLeft'].includes($event.key) && incrementIndex(-1) ;"
-      >
+
+    <div class="grid grid-cols-10 grid-rows-3 w-full">
+      <div
+        class="col-span-full row-span-1 size-full"
+        @click="incrementIndex(-1)"
+      ></div>
+      <aside
+        class="col-span-1 row-span-1 size-full"
+        @click="incrementIndex(-1)"
+      ></aside>
+      <section class="w-full col-span-8 aspect-video">
         <% videos.forEach((video , id) => { %>
-        <template x-if="Math.abs(<%=id%> - index)<2">
+        <template x-if=" Math.abs(<%=id%> - index)<2">
           <div
             class="size-full"
-            x-data="{show : index == <%=id%>}"
-            x-effect="show = index == <%=id%>; Math.abs(<%=id%> - index)>2 && console.log('out')  "
-            x-show="show"
+            x-show="index == <%=id%>;"
             x-transition:enter="transition duration-500 ease-in"
             x-transition:enter-start="scale-95 opacity-0"
             x-transition:enter-end="opacity-100 scale-100"
@@ -62,7 +73,16 @@
         </template>
         <% }) %>
       </section>
-      <aside class="col-span-1 size-full" @click="incrementIndex(1)"></aside>
+      <aside
+        class="col-span-1 row-span-1 size-full"
+        @click="incrementIndex(1)"
+      ></aside>
+      <div
+        class="col-span-full row-span-1 size-full"
+        @click="incrementIndex(1)"
+      >
+        <h4 class="self-end text-right" x-text="(index+1) + '/' + n"></h4>
+      </div>
     </div>
 
     <div class="flex-col flex-1 w-full" @click="incrementIndex(1)"></div>
@@ -76,7 +96,7 @@
         class="size-full motion flex justify-center"
         x-bind:class="hidden ? 'translate-y-full' : ''"
       >
-        <h4>Made in BesBar in order to BesBar</h4>
+        <h4>Fait à Belleville pour un gars de BesBar</h4>
       </section>
     </footer>
     <script>
