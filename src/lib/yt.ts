@@ -25,7 +25,7 @@ async function storePlaylist(videos: string[]) {
     ],
     { type: "application/json" }
   );
-  await put("buffered_playlist", blob, {
+  await put(`buffered_playlist/${PLAYLIST_ID}`, blob, {
     access: "public",
     allowOverwrite: true,
   });

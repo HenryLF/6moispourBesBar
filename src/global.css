@@ -2,7 +2,7 @@
 
 @theme {
   --color-dark: #000000;
-  --color-light: #bebbbb;
+  --color-light: #808080;
   --color-contrast: #ee6352;
 
   --spacing-smaller: clamp(5px, 1.5vw, 20px);
@@ -48,13 +48,13 @@ footer {
 h1 {
   @apply text-4xl p-small;
   @apply font-extrabold font-mono italic;
-  @apply text-dark dark:text-light transition-colors duration-400 ease-in-out;
+  @apply text-black dark:text-white transition-colors duration-400 ease-in-out;
 }
 
 h4 {
   @apply text-xs p-1;
   @apply font-mono italic;
-  @apply text-dark dark:text-light transition-colors duration-400 ease-in-out;
+  @apply text-black dark:text-white transition-colors duration-400 ease-in-out;
 }
 
 section {
@@ -70,14 +70,12 @@ section {
 .touch-area {
   animation: blink 400ms ease-in-out;
 }
-
 @keyframes blink {
   10%,
   90% {
-
-    background-image: radial-gradient(#bebbbb10, #00000000 30%);
+    background-image: radial-gradient(#ffffff10, #00000000 30%);
   }
   50% {
-    background-image: radial-gradient(#bebbbb15, #00000000 90%);
+    background-image: radial-gradient(#ffffff15, #00000000 90%);
   }
 }
