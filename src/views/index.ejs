@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>6 mois pour BESBAR</title>
-    <script id="iframe-api" src="https://www.youtube.com/iframe_api"></script>
+    <title><%=meta.title%></title>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="<%=player%>"></script>
     <link rel="stylesheet" href="/style.css" />
     <script
       defer
@@ -14,7 +15,7 @@
   <body
     x-data="{index:0,
         dark : matchMedia('(prefers-color-scheme: dark)'),
-        n : <%=videos.length%>,
+        n : <%=playlist.videos.length%>,
         touchEvent : null,
         next:true,
         incrementIndex(x){
@@ -25,17 +26,23 @@
         }
       }"
     :class="dark && 'dark'"
+    @state-changed.window="console.log($event.detail)"
     @wheel.window="$event.deltaY > 100 ? incrementIndex(1) :  $event.deltaY < -100 && incrementIndex(-1)"
     @touchstart.window="touchEvent = { x: $event.touches[0].clientX ,y: $event.touches[0].clientY}"
-    @touchmove.window=" $event.preventDefault()
-     let deltaY = touchEvent.y - $event.touches[0].clientY
-     if (Math.abs(deltaY) > 100){
-      deltaY > 0 ? incrementIndex(1) : incrementIndex(-1)
-      touchEvent.y =  $event.touches[0].clientY
-     }"
+    @touchmove.window="
+    $event.preventDefault();
+    let deltaY = touchEvent.y - $event.touches[0].clientY
+    if (Math.abs(deltaY) > 100){
+    deltaY > 0 ? incrementIndex(1) : incrementIndex(-1)
+    touchEvent.y =  $event.touches[0].clientY
+    }"
     @keyup.window="['ArrowUp' , 'ArrowRight'].includes($event.key) && incrementIndex(1) ;
                   ['ArrowDown' , 'ArrowLeft'].includes($event.key) && incrementIndex(-1) ;"
   >
+    <div
+      id="background"
+      class="absolute h-[100vh] w-[100vw] top-0 left-0 -z-10 opacity-15"
+    ></div>
     <header
       class="w-full motion p-1"
       @mouseover="hidden=false"
@@ -47,7 +54,7 @@
         class="size-full motion flex items-center justify-between"
         x-bind:class="hidden ? '-translate-y-[110%]' : ''"
       >
-        <h1>6 mois pour BESBAR</h1>
+        <h1><%=meta.title%></h1>
         <image
           @click="dark = !dark"
           :src="dark ? '/dark.svg':'/light.svg'"
@@ -67,15 +74,21 @@
         @click="incrementIndex(-1)&&triggerAnim($el,'touch-area') "
       ></aside>
       <section class="w-full col-span-8 aspect-video">
-        <% videos.forEach((video , id) => { %>
+        <% playlist.videos.forEach((video , id) => { %>
         <template x-if=" Math.abs(<%=id%> - index)<2">
           <div
             class="size-full"
-            x-show="index == <%=id%>"
-            x-bind:class="index == <%=id%> && (next ? 'motionNext' : 'motionPrev')"
+            x-data="{player : null }"
+            x-show="index==<%=id%>"
+            x-effect="index==<%=id%> ?  player?.load ? player.load() : player?.play()  : player?.pause()"
+            x-bind:class="index==<%=id%> && (next ? 'motionNext' : 'motionPrev')"
+            @video-ended="player = $event.detail; incrementIndex(1)"
+            @player-ready="player = $event.detail;
+            index==<%=id%> ?  player.play() : player.pause()"
           >
             <div
-              x-init="setTimeout(()=>initPlayer($el,'<%=video%>'),100)"
+              x-init="player = initPlayer($el,'<%=video%>');"
+              x-bind:id="'player<%=id%>'"
               class="size-full"
             ></div>
           </div>
@@ -108,33 +121,10 @@
         class="size-full motion flex justify-center"
         x-bind:class="hidden ? 'translate-y-[120%]' : ''"
       >
-        <h4>Fait à Belleville pour un gars de BesBar</h4>
+        <h4><%=meta.footer%></h4>
       </section>
     </footer>
     <script>
-      function initPlayer(el, videoId) {
-        var player;
-        window.onYouTubeIframeAPIReady = function () {
-          player = new YT.Player(el, {
-            height: "390",
-            width: "640",
-            videoId,
-            playerVars: {
-              playsinline: 1,
-              mute: 1,
-              autoplay: 1,
-            },
-            events: {
-              onReady: function (event) {
-                window.videoPlayer = player;
-              },
-            },
-          });
-        };
-
-        if (YT.Player) window.onYouTubeIframeAPIReady();
-      }
-
       function triggerAnim(el, className) {
         el.classList.remove(className);
         setTimeout(() => el.classList.add(className), 1);

@@ -3,7 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getVideo = getVideo;
 const googleapis_1 = require("googleapis");
 const blob_1 = require("@vercel/blob");
-const { YOUTUBE_API_KEY, PLAYLIST_ID, BLOB_URL } = process.env;
+const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY ?? "";
+const PLAYLIST_ID = process.env.PLAYLIST_ID ?? "";
 const REFRESH_DELAY = 1200000; //20 minutes
 const youtubeAPI = googleapis_1.google.youtube({
     version: "v3",
@@ -16,21 +17,32 @@ async function storePlaylist(videos) {
             timestamp: Date.now(),
         }),
     ], { type: "application/json" });
-    await (0, blob_1.put)("buffered_playlist", blob, {
+    await (0, blob_1.put)(PLAYLIST_ID, blob, {
         access: "public",
         allowOverwrite: true,
     });
 }
 async function getPlaylist() {
-    const k = await fetch(BLOB_URL);
-    return k.json();
+    const storedBlobs = await (0, blob_1.list)();
+    const blob = storedBlobs.blobs.find((item) => (item.pathname = PLAYLIST_ID));
+    if (!blob)
+        return { timestamp: Date.now(), videos: [] };
+    const playlist = await fetch(blob?.url);
+    return playlist.json();
 }
 async function getVideoFromAPI() {
-    const playlist = await youtubeAPI.playlistItems.list({
-        part: ["snippet"],
-        playlistId: PLAYLIST_ID,
-        maxResults: 50,
-    });
+    let playlist;
+    try {
+        playlist = await youtubeAPI.playlistItems.list({
+            part: ["snippet"],
+            playlistId: PLAYLIST_ID,
+            maxResults: 50,
+        });
+    }
+    catch (e) {
+        console.error(`api error ${e}`);
+        return [];
+    }
     if (playlist.status != 200) {
         console.error(`api error ${playlist.status}`, playlist);
         return [];
@@ -40,10 +52,10 @@ async function getVideoFromAPI() {
 }
 async function getVideo() {
     const buffer = await getPlaylist();
-    if (Date.now() - buffer.timestamp < REFRESH_DELAY) {
-        return buffer.videos;
+    if (buffer.videos.length && Date.now() - buffer.timestamp < REFRESH_DELAY) {
+        return { videos: buffer.videos, playlistId: PLAYLIST_ID };
     }
     const videos = await getVideoFromAPI();
-    storePlaylist(videos);
-    return videos;
+    videos.length && storePlaylist(videos);
+    return { videos, playlistId: PLAYLIST_ID };
 }

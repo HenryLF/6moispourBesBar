@@ -175,6 +175,18 @@
   }
 }
 @layer utilities {
+  .absolute {
+    position: absolute;
+  }
+  .top-0 {
+    top: calc(var(--spacing) * 0);
+  }
+  .left-0 {
+    left: calc(var(--spacing) * 0);
+  }
+  .-z-10 {
+    z-index: calc(10 * -1);
+  }
   .col-span-1 {
     grid-column: span 1 / span 1;
   }
@@ -212,6 +224,12 @@
   .size-main {
     width: var(--spacing-main);
     height: var(--spacing-main);
+  }
+  .h-\[100vh\] {
+    height: 100vh;
+  }
+  .w-\[100vw\] {
+    width: 100vw;
   }
   .w-full {
     width: 100%;
@@ -282,6 +300,9 @@
   }
   .opacity-0 {
     opacity: 0%;
+  }
+  .opacity-15 {
+    opacity: 15%;
   }
   .opacity-100 {
     opacity: 100%;
@@ -387,6 +408,8 @@ section {
   &:where(.dark, .dark *) {
     border-color: var(--color-light);
   }
+  overflow-y: hidden;
+  padding: calc(var(--spacing) * 1);
   background-color: var(--color-light);
   transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
@@ -398,28 +421,40 @@ section {
   &:where(.dark, .dark *) {
     background-color: var(--color-dark);
   }
-  overflow-y: hidden;
+}
+.motion {
+  transition-property: transform, translate, scale, rotate;
+  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  --tw-duration: 400ms;
+  transition-duration: 400ms;
+  --tw-ease: var(--ease-in-out);
+  transition-timing-function: var(--ease-in-out);
 }
 .motionPrev {
-  animation: motion-prev 200ms ease-out;
+  animation: motion-prev 800ms ease-in-out;
 }
 @keyframes motion-prev {
   from {
-    transform: translate(0, -110%);
+    transform: translate(0, -110%) scale(90%);
+    opacity: 0%;
   }
   to {
-    transform: translate(0);
+    transform: none;
+    opacity: 100%;
   }
 }
 .motionNext {
-  animation: motion-next 200ms ease-out;
+  animation: motion-next 800ms ease-out;
 }
 @keyframes motion-next {
   from {
-    transform: translate(0, 110%);
+    transform: translate(0, 110%) scale(90%);
+    opacity: 0%;
   }
   to {
-    transform: translate(0);
+    transform: none;
+    opacity: 100%;
   }
 }
 .touch-area {

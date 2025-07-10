@@ -59,32 +59,40 @@ h4 {
 
 section {
   @apply border-2 border-dark dark:border-light;
+  @apply p-1 overflow-y-hidden;
   @apply bg-light dark:bg-dark transition-colors duration-400 ease-in-out;
-  @apply overflow-y-hidden;
+}
+
+.motion {
+  @apply transition-transform duration-400 ease-in-out;
 }
 
 .motionPrev {
-  animation: motion-prev 200ms ease-out;
+  animation: motion-prev 800ms ease-in-out;
 }
 
 @keyframes motion-prev {
   from {
-    transform: translate(0, -110%);
+    transform: translate(0, -110%) scale(90%);
+    opacity: 0%;
   }
   to {
-    transform: translate(0);
+    transform: none;
+    opacity: 100%;
   }
 }
 .motionNext {
-  animation: motion-next 200ms ease-out;
+  animation: motion-next 800ms ease-out;
 }
 
 @keyframes motion-next {
   from {
-    transform: translate(0, 110%);
+    transform: translate(0, 110%) scale(90%);
+    opacity: 0%;
   }
   to {
-    transform: translate(0);
+    transform: none;
+    opacity: 100%;
   }
 }
 

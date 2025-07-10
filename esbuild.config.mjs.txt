@@ -1,0 +1,18 @@
+import { build } from "esbuild";
+// Use a top-level async function
+(async () => {
+  try {
+    await build({
+      entryPoints: ["src/public/*.ts"],
+      bundle: true,
+      format: "umd",
+      globalName: "Bundle",
+      outdir: "src/public",
+      sourcemap: true, // Optional: add source maps
+    });
+    console.log("Build completed successfully");
+  } catch (err) {
+    console.error("Build failed:", err);
+    process.exit(1);
+  }
+})();

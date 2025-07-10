@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%=meta.title%></title>
+    <link rel="stylesheet" href="/style.css" />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body
+    x-data="{
+        dark : matchMedia('(prefers-color-scheme: dark)'),}"
+    :class="dark&&'dark'"
+  >
+    <header
+      class="w-full motion p-1"
+      @mouseover="hidden=false"
+      @mouseleave="hidden=true"
+      x-data="{hidden : false}"
+      x-init="setTimeout(()=>hidden=true , 1_000)"
+    >
+      <section
+        class="size-full motion flex items-center justify-between"
+        x-bind:class="hidden ? '-translate-y-[110%]' : ''"
+      >
+        <h1><%= meta.title%></h1>
+        <image
+          @click="dark = !dark"
+          :src="dark ? '/dark.svg':'/light.svg'"
+          class="size-main mr-smaller"
+        >
+        </image>
+      </section>
+    </header>
+    <main class="flex flex-1 flex-col items-center justify-center">
+      <h1>Ooops... invalid/empty playlist.</h1>
+      <h4>Playlist id : <%=playlist.playlistId%></h4>
+    </main>
+
+    <footer
+      class="w-full motion"
+      x-data="{hidden : false}"
+      @mouseover=" hidden=false"
+      @mouseleave="hidden=true"
+      x-init="setTimeout(()=>hidden=true , 1_000)"
+    >
+      <section
+        class="size-full motion flex justify-center"
+        x-bind:class="hidden ? 'translate-y-[120%]' : ''"
+      >
+        <h4><%= meta.footer%></h4>
+      </section>
+    </footer>
+  </body>
+</html>
