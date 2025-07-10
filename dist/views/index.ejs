@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%=meta.title%></title>
-    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="<%=player%>"></script>
     <link rel="stylesheet" href="/style.css" />
     <script
@@ -26,7 +25,6 @@
         }
       }"
     :class="dark && 'dark'"
-    @state-changed.window="console.log($event.detail)"
     @wheel.window="$event.deltaY > 100 ? incrementIndex(1) :  $event.deltaY < -100 && incrementIndex(-1)"
     @touchstart.window="touchEvent = { x: $event.touches[0].clientX ,y: $event.touches[0].clientY}"
     @touchmove.window="
@@ -75,7 +73,7 @@
       ></aside>
       <section class="w-full col-span-8 aspect-video">
         <% playlist.videos.forEach((video , id) => { %>
-        <template x-if=" Math.abs(<%=id%> - index)<2">
+        <template x-if="Math.abs(<%=id%> - index)<2">
           <div
             class="size-full"
             x-data="{player : null }"
@@ -84,6 +82,7 @@
             x-bind:class="index==<%=id%> && (next ? 'motionNext' : 'motionPrev')"
             @video-ended="player = $event.detail; incrementIndex(1)"
             @player-ready="player = $event.detail;
+            console.log(player);
             index==<%=id%> ?  player.play() : player.pause()"
           >
             <div

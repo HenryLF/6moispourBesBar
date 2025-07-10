@@ -31,6 +31,7 @@ async function getPlaylist() {
     return playlist.json();
 }
 async function getVideoFromAPI() {
+    let videoIds = [];
     let playlist;
     try {
         playlist = await youtubeAPI.playlistItems.list({
@@ -41,13 +42,24 @@ async function getVideoFromAPI() {
     }
     catch (e) {
         console.error(`api error ${e}`);
-        return [];
+        return videoIds;
     }
-    if (playlist.status != 200) {
-        console.error(`api error ${playlist.status}`, playlist);
-        return [];
+    videoIds.push(...playlist.data.items?.map((it) => it.snippet?.resourceId?.videoId));
+    while (playlist.data.nextPageToken) {
+        try {
+            playlist = await youtubeAPI.playlistItems.list({
+                part: ["snippet"],
+                playlistId: PLAYLIST_ID,
+                maxResults: 50,
+                pageToken: playlist.data.nextPageToken,
+            });
+        }
+        catch (e) {
+            console.error(`api error ${e}`);
+            return videoIds;
+        }
+        videoIds.push(...playlist.data.items?.map((it) => it.snippet?.resourceId?.videoId));
     }
-    const videoIds = playlist.data.items?.map((it) => it.snippet?.resourceId?.videoId);
     return videoIds;
 }
 async function getVideo() {

@@ -73,7 +73,7 @@
       ></aside>
       <section class="w-full col-span-8 aspect-video">
         <% playlist.videos.forEach((video , id) => { %>
-        <template x-if=" Math.abs(<%=id%> - index)<2">
+        <template x-if="Math.abs(<%=id%> - index)<2">
           <div
             class="size-full"
             x-data="{player : null }"

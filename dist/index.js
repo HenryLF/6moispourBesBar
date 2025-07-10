@@ -43,7 +43,7 @@ app.get("/background", async (_, res) => {
     res.render("index", {
         meta: meta_1.default,
         playlist,
-        player: "/player/videoTag.js",
+        player: "/player/plyr.js",
     });
 });
 app.listen(PORT, () => {
