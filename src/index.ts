@@ -29,7 +29,7 @@ app.get("/", async (_, res) => {
   res.render("index", {
     meta,
     playlist,
-    player: "/ytPlayer.js",
+    player: "/player/iFrame.js",
   });
 });
 
@@ -45,7 +45,7 @@ app.get("/background", async (_, res) => {
   res.render("index", {
     meta,
     playlist,
-    player: "/ytPlayerBackground.js",
+    player: "/player/plyr.js",
   });
 });
 

@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>6 mois pour BESBAR</title>
-    <script id="iframe-api" src="https://www.youtube.com/iframe_api"></script>
+    <title><%=meta.title%></title>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="<%=player%>"></script>
     <link rel="stylesheet" href="/style.css" />
     <script
       defer
@@ -13,104 +14,120 @@
   </head>
   <body
     x-data="{index:0,
-        n : <%=videos.length%>,
+        dark : matchMedia('(prefers-color-scheme: dark)'),
+        n : <%=playlist.videos.length%>,
         touchEvent : null,
+        next:true,
         incrementIndex(x){
-          if(this.index + x < 0 || this.index + x > this.n ) return
+          this.next = x>0
+          if(this.index + x < 0 || this.index + x >= this.n ) return false
           this.index +=x
+          return true
         }
       }"
-    @scroll.window="$event.deltaY > 100 ? incrementIndex(1) :  $event.deltaY < -100 && incrementIndex(-1)"
-    @touchstart.window="touchEvent = {y: $event.clientX,x: $event.clientY}"
-    @touchend.window="console.log(touchEvent)"
+    :class="dark && 'dark'"
+    @state-changed.window="console.log($event.detail)"
+    @wheel.window="$event.deltaY > 100 ? incrementIndex(1) :  $event.deltaY < -100 && incrementIndex(-1)"
+    @touchstart.window="touchEvent = { x: $event.touches[0].clientX ,y: $event.touches[0].clientY}"
+    @touchmove.window="
+    $event.preventDefault();
+    let deltaY = touchEvent.y - $event.touches[0].clientY
+    if (Math.abs(deltaY) > 100){
+    deltaY > 0 ? incrementIndex(1) : incrementIndex(-1)
+    touchEvent.y =  $event.touches[0].clientY
+    }"
     @keyup.window="['ArrowUp' , 'ArrowRight'].includes($event.key) && incrementIndex(1) ;
-      ['ArrowDown' , 'ArrowLeft'].includes($event.key) && incrementIndex(-1) ;"
+                  ['ArrowDown' , 'ArrowLeft'].includes($event.key) && incrementIndex(-1) ;"
   >
+    <div
+      id="background"
+      class="absolute h-[100vh] w-[100vw] top-0 left-0 -z-10 opacity-15"
+    ></div>
     <header
-      class="w-full motion"
+      class="w-full motion p-1"
       @mouseover="hidden=false"
       @mouseleave="hidden=true"
       x-data="{hidden : false}"
       x-init="setTimeout(()=>hidden=true , 1_000)"
-      :text="touchEvent"
     >
       <section
-        class="size-full motion"
-        x-bind:class="hidden ? '-translate-y-full' : ''"
+        class="size-full motion flex items-center justify-between"
+        x-bind:class="hidden ? '-translate-y-[110%]' : ''"
       >
-        <h1>6 mois pour BESBAR</h1>
+        <h1><%=meta.title%></h1>
+        <image
+          @click="dark = !dark"
+          :src="dark ? '/dark.svg':'/light.svg'"
+          class="size-main mr-smaller"
+        >
+        </image>
       </section>
     </header>
-    <div
-      class="flex-col flex-1 w-full touch-area"
-      @click="incrementIndex(-1)"
-    ></div>
-    <div class="grid grid-cols-15 w-full">
+
+    <main class="grid grid-cols-10 grid-rows-3 w-full">
+      <div
+        class="col-span-full row-span-1 size-full touch-area"
+        @click="incrementIndex(-1)&&triggerAnim($el,'touch-area')"
+      ></div>
       <aside
-        class="col-span-1 size-full touch-area"
-        @click="incrementIndex(-1)"
+        class="col-span-1 row-span-1 size-full touch-area"
+        @click="incrementIndex(-1)&&triggerAnim($el,'touch-area') "
       ></aside>
-      <section class="w-full col-span-13 aspect-video">
-        <% videos.forEach((video , id) => { %>
-        <template x-if="Math.abs(<%=id%> - index)<2">
+      <section class="w-full col-span-8 aspect-video">
+        <% playlist.videos.forEach((video , id) => { %>
+        <template x-if=" Math.abs(<%=id%> - index)<2">
           <div
             class="size-full"
-            x-data="{show : index == <%=id%>}"
-            x-effect="show = index == <%=id%>; Math.abs(<%=id%> - index)>2 && console.log('out')  "
-            x-show="show"
-            x-transition:enter="transition duration-500 ease-in"
-            x-transition:enter-start="scale-95 opacity-0"
-            x-transition:enter-end="opacity-100 scale-100"
+            x-data="{player : null }"
+            x-show="index==<%=id%>"
+            x-effect="index==<%=id%> ?  player?.play()  : player?.pause()"
+            x-bind:class="index==<%=id%> && (next ? 'motionNext' : 'motionPrev')"
+            @video-ended="player = $event.detail; incrementIndex(1)"
+            @player-ready="player = $event.detail;
+            index==<%=id%> ?  player.play() : player.pause()"
           >
             <div
-              x-init="setTimeout(()=>initPlayer($el,'<%=video%>'),100)"
+              x-init="player = initPlayer($el,'<%=video%>');"
+              x-bind:id="'player<%=id%>'"
               class="size-full"
             ></div>
           </div>
         </template>
         <% }) %>
       </section>
-      <aside class="col-span-1 size-full" @click="incrementIndex(1)"></aside>
-    </div>
+      <aside
+        class="col-span-1 row-span-1 size-full touch-area"
+        @click="incrementIndex(1)&&triggerAnim($el,'touch-area')"
+      ></aside>
+      <div
+        class="col-span-full row-span-1 size-full touch-area"
+        @click="incrementIndex(1)&&triggerAnim($el,'touch-area')"
+      >
+        <h4
+          class="self-end text-right opacity-100"
+          x-text="(index+1) + '/' + n"
+        ></h4>
+      </div>
+    </main>
 
-    <div class="flex-col flex-1 w-full" @click="incrementIndex(1)"></div>
     <footer
       class="w-full motion"
-      x-data="{hidden : true}"
-      @mouseover=" hidden = false"
+      x-data="{hidden : false}"
+      @mouseover=" hidden=false"
       @mouseleave="hidden=true"
+      x-init="setTimeout(()=>hidden=true , 1_000)"
     >
       <section
         class="size-full motion flex justify-center"
-        x-bind:class="hidden ? 'translate-y-full' : ''"
+        x-bind:class="hidden ? 'translate-y-[120%]' : ''"
       >
-        <h4>Made in BesBar in order to BesBar</h4>
+        <h4><%=meta.footer%></h4>
       </section>
     </footer>
-
     <script>
-      function initPlayer(el, videoId) {
-        var player;
-        window.onYouTubeIframeAPIReady = function () {
-          player = new YT.Player(el, {
-            height: "390",
-            width: "640",
-            videoId,
-            playerVars: {
-              playsinline: 1,
-              mute: 1,
-              autoplay: 1,
-            },
-            events: {
-              onReady: function (event) {
-                console.log(el.id, "ready");
-                window.videoPlayer = player;
-              },
-            },
-          });
-        };
-
-        if (YT.Player) window.onYouTubeIframeAPIReady();
+      function triggerAnim(el, className) {
+        el.classList.remove(className);
+        setTimeout(() => el.classList.add(className), 1);
       }
     </script>
   </body>

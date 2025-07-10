@@ -21,13 +21,29 @@ app.get("/", async (_, res) => {
     if (!playlist.videos.length) {
         res.render("empty_playlist", {
             meta: meta_1.default,
-            playlist
+            playlist,
         });
         return;
     }
     res.render("index", {
         meta: meta_1.default,
         playlist,
+        player: "/player/iFrame.js",
+    });
+});
+app.get("/background", async (_, res) => {
+    const playlist = await (0, yt_1.getVideo)();
+    if (!playlist.videos.length) {
+        res.render("empty_playlist", {
+            meta: meta_1.default,
+            playlist,
+        });
+        return;
+    }
+    res.render("index", {
+        meta: meta_1.default,
+        playlist,
+        player: "/player/videoTag.js",
     });
 });
 app.listen(PORT, () => {

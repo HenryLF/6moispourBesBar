@@ -832,49 +832,23 @@ var require_dist = __commonJS({
   }
 });
 
-// src/public/ytPlayer.ts
-var ytPlayer_exports = {};
-__export(ytPlayer_exports, {
+// src/public/player/videoTag.ts
+var videoTag_exports = {};
+__export(videoTag_exports, {
   initPlayer: () => initPlayer
 });
-module.exports = __toCommonJS(ytPlayer_exports);
+module.exports = __toCommonJS(videoTag_exports);
 var import_youtube_player = __toESM(require_dist());
 function initPlayer(el, videoId) {
-  var _a;
-  const player = (0, import_youtube_player.default)(el, {
+  let videoUrl;
+  const iFrame = (0, import_youtube_player.default)(el, {
     videoId,
     playerVars: {
       modestbranding: 1,
       autoplay: 0
     }
   });
-  const parent = (_a = document.getElementById(el.id)) == null ? void 0 : _a.parentElement;
-  player.on("ready", () => {
-    player.mute();
-    parent == null ? void 0 : parent.dispatchEvent(
-      new CustomEvent("player-ready", {
-        detail: {
-          play: player.playVideo,
-          pause: player.pauseVideo
-        }
-      })
-    );
-  });
-  player.on("error", () => {
-    parent == null ? void 0 : parent.dispatchEvent(
-      new CustomEvent("video-ended", { detail: initPlayer(el, videoId) })
-    );
-    player.destroy();
-  });
-  player.on("stateChange", ({ data }) => {
-    switch (data) {
-      case 0:
-        parent == null ? void 0 : parent.dispatchEvent(
-          new CustomEvent("video-ended", { detail: initPlayer(el, videoId) })
-        );
-        break;
-    }
-  });
+  iFrame.on("ready", () => console.log(document.getElementById(el.id)));
 }
 /*! Bundled license information:
 
@@ -886,4 +860,4 @@ sister/src/sister.js:
 */
 
 if(__exports != exports)module.exports = exports;return module.exports}));
-//# sourceMappingURL=ytPlayer.js.map
+//# sourceMappingURL=videoTag.js.map

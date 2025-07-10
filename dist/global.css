@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dark: #000000;
+  --color-light: #808080;
+  --color-contrast: #ee6352;
+
+  --spacing-smaller: clamp(5px, 1.5vw, 20px);
+  --spacing-small: clamp(10px, 3vw, 50px);
+  --spacing-main: clamp(20px, 5vw, 150px);
+  --spacing-large: clamp(40px, 10vw, 250px);
+}
+@custom-variant dark (&:where(.dark, .dark *));
+
+html {
+  all: unset;
+}
+
+body {
+  all: unset;
+  background-color: var(--color-dark);
+  color: var(--color-light);
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+
+  @apply flex flex-col items-center justify-center;
+  @apply bg-light dark:bg-dark transition-colors duration-400 ease-in-out;
+}
+
+.iframe {
+  @apply size-full;
+}
+
+header {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  @apply p-1;
+}
+footer {
+  position: absolute;
+  bottom: 0;
+  overflow: hidden;
+  @apply p-1;
+}
+
+h1 {
+  @apply text-4xl p-small;
+  @apply font-extrabold font-mono italic;
+  @apply text-black dark:text-white transition-colors duration-400 ease-in-out;
+}
+
+h4 {
+  @apply text-xs p-1;
+  @apply font-mono italic;
+  @apply text-black dark:text-white transition-colors duration-400 ease-in-out;
+}
+
+section {
+  @apply border-2 border-dark dark:border-light;
+  @apply p-1 overflow-y-hidden;
+  @apply bg-light dark:bg-dark transition-colors duration-400 ease-in-out;
+}
+
+.motion {
+  @apply transition-transform duration-400 ease-in-out;
+}
+
+.motionPrev {
+  animation: motion-prev 800ms ease-in-out;
+}
+
+@keyframes motion-prev {
+  from {
+    transform: translate(0, -110%) scale(90%);
+    opacity: 0%;
+  }
+  to {
+    transform: none;
+    opacity: 100%;
+  }
+}
+.motionNext {
+  animation: motion-next 800ms ease-out;
+}
+
+@keyframes motion-next {
+  from {
+    transform: translate(0, 110%) scale(90%);
+    opacity: 0%;
+  }
+  to {
+    transform: none;
+    opacity: 100%;
+  }
+}
+
+.touch-area {
+  animation: blink 400ms ease-in-out;
+}
+@keyframes blink {
+  10%,
+  90% {
+    background-image: radial-gradient(#ffffff10, #00000000 30%);
+  }
+  50% {
+    background-image: radial-gradient(#ffffff15, #00000000 90%);
+  }
+}

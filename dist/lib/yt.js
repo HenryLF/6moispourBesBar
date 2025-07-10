@@ -5,7 +5,7 @@ const googleapis_1 = require("googleapis");
 const blob_1 = require("@vercel/blob");
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY ?? "";
 const PLAYLIST_ID = process.env.PLAYLIST_ID ?? "";
-const REFRESH_DELAY = 1200000; //20 minutes
+const REFRESH_DELAY = 1_200_000; //20 minutes
 const youtubeAPI = googleapis_1.google.youtube({
     version: "v3",
     auth: YOUTUBE_API_KEY,

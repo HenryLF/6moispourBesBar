@@ -3,8 +3,8 @@ import { build } from "esbuild";
 import { umdWrapper } from "esbuild-plugin-umd-wrapper";
 
 await build({
-  entryPoints: ["src/public/*.ts"],
-  outdir: "src/public/",
+  entryPoints: ["src/public/player/*.ts"],
+  outdir: "src/public/player",
   bundle: true,
   format: "umd",
   platform: "browser",

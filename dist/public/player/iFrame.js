@@ -832,42 +832,16 @@ var require_dist = __commonJS({
   }
 });
 
-// src/public/ytPlayerBackground.ts
-var ytPlayerBackground_exports = {};
-__export(ytPlayerBackground_exports, {
+// src/public/player/iFrame.ts
+var iFrame_exports = {};
+__export(iFrame_exports, {
   initPlayer: () => initPlayer
 });
-module.exports = __toCommonJS(ytPlayerBackground_exports);
+module.exports = __toCommonJS(iFrame_exports);
 var import_youtube_player = __toESM(require_dist());
-function createSlavePlayer(videoId, master) {
-  return new Promise((resolve) => {
-    const background = document.getElementById("background");
-    const slave = (0, import_youtube_player.default)(background || "background", {
-      videoId,
-      playerVars: {
-        modestbranding: 1,
-        autoplay: 0,
-        controls: 0
-      }
-    });
-    slave.on("ready", () => {
-      slave.mute();
-      const typedMaster = master;
-      typedMaster.getPlayerState().then((state) => {
-        if (state === 1) {
-          slave == null ? void 0 : slave.playVideo();
-        }
-      });
-      typedMaster.getCurrentTime().then((time) => {
-        slave == null ? void 0 : slave.seekTo(time, true);
-      });
-      resolve(slave);
-    });
-  });
-}
 function initPlayer(el, videoId) {
   var _a;
-  const master = (0, import_youtube_player.default)(el, {
+  const player = (0, import_youtube_player.default)(el, {
     videoId,
     playerVars: {
       modestbranding: 1,
@@ -875,42 +849,29 @@ function initPlayer(el, videoId) {
     }
   });
   const parent = (_a = document.getElementById(el.id)) == null ? void 0 : _a.parentElement;
-  let slave = null;
-  createSlavePlayer(videoId, master).then((s) => {
-    slave = s;
-  });
-  master.on("ready", () => {
-    master.mute();
+  player.on("ready", () => {
+    player.mute();
     parent == null ? void 0 : parent.dispatchEvent(
       new CustomEvent("player-ready", {
         detail: {
-          play: master.playVideo,
-          pause: master.pauseVideo,
-          load: slave == null ? void 0 : slave.loadVideoById
+          play: player.playVideo,
+          pause: player.pauseVideo
         }
       })
     );
   });
-  master.on("error", () => {
-    if (slave) slave.destroy();
+  player.on("error", () => {
     parent == null ? void 0 : parent.dispatchEvent(
       new CustomEvent("video-ended", { detail: initPlayer(el, videoId) })
     );
-    master.destroy();
+    player.destroy();
   });
-  master.on("stateChange", ({ data }) => {
+  player.on("stateChange", ({ data }) => {
     switch (data) {
       case 0:
-        if (slave) slave.destroy();
         parent == null ? void 0 : parent.dispatchEvent(
           new CustomEvent("video-ended", { detail: initPlayer(el, videoId) })
         );
-        break;
-      case 1:
-        slave == null ? void 0 : slave.playVideo();
-        break;
-      case 2:
-        slave == null ? void 0 : slave.pauseVideo();
         break;
     }
   });
@@ -925,4 +886,4 @@ sister/src/sister.js:
 */
 
 if(__exports != exports)module.exports = exports;return module.exports}));
-//# sourceMappingURL=ytPlayerBackground.js.map
+//# sourceMappingURL=iFrame.js.map
