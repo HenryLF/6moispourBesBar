@@ -14,8 +14,8 @@
   <body
     x-data="{
         waitForUserInput : isDesktop(),
-        index:0,
         dark : matchMedia('(prefers-color-scheme: dark)'),
+        index:0,
         n : <%=playlist.videos.length%>,
         touchEvent : null,
         next:true,
@@ -29,15 +29,14 @@
     :class="dark && 'dark'"
     @wheel.window="$event.deltaY > 100 ? incrementIndex(1) :  $event.deltaY < -100 && incrementIndex(-1)"
     @touchstart.window="touchEvent = { x: $event.touches[0].clientX ,y: $event.touches[0].clientY}"
-    @touchmove.window="
-    $event.preventDefault();
+    @touchmove.window.prevent="
     let deltaY = touchEvent.y - $event.touches[0].clientY
     if (Math.abs(deltaY) > 100){
     deltaY > 0 ? incrementIndex(1) : incrementIndex(-1)
     touchEvent.y =  $event.touches[0].clientY
     }"
-    @keyup.window="['ArrowUp' , 'ArrowRight'].includes($event.code) && incrementIndex(-1) ;
-                  ['ArrowDown' , 'ArrowLeft' , 'Space'].includes($event.code) && incrementIndex(1) ;"
+    @keyup.window="!waitForUserInput && ['ArrowUp' , 'ArrowRight'].includes($event.code) && incrementIndex(-1) ;
+                   !waitForUserInput && ['ArrowDown' , 'ArrowLeft' , 'Space'].includes($event.code) && incrementIndex(1) ;"
   >
     <!-- overlay userinput for autoplay -->
     <template x-if="waitForUserInput">
@@ -45,7 +44,7 @@
         id="background"
         class="absolute size-full top-0 left-0 z-0 bg-light dark:bg-dark flex flex-col justify-center items-center"
         @click.window="triggerAnim($el,'touch-area' , ()=>{waitForUserInput = false} , 400)"
-        @keydown.window="waitForUserInput=false"
+        @keyup.window="waitForUserInput=false"
       >
         <h1>Touch to start</h1>
         <p><%=meta.welcomeText%></p>
