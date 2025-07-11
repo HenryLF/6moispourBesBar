@@ -36,8 +36,8 @@
     deltaY > 0 ? incrementIndex(1) : incrementIndex(-1)
     touchEvent.y =  $event.touches[0].clientY
     }"
-    @keyup.window="['ArrowUp' , 'ArrowRight'].includes($event.key) && incrementIndex(1) ;
-                  ['ArrowDown' , 'ArrowLeft'].includes($event.key) && incrementIndex(-1) ;"
+    @keyup.window="['ArrowUp' , 'ArrowRight'].includes($event.code) && incrementIndex(-1) ;
+                  ['ArrowDown' , 'ArrowLeft' , 'Space'].includes($event.code) && incrementIndex(1) ;"
   >
     <!-- overlay userinput for autoplay -->
     <template x-if="waitForUserInput">
