@@ -30,6 +30,26 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
 
 // node_modules/sister/src/sister.js
 var require_sister = __commonJS({
@@ -839,6 +859,9 @@ __export(iFrame_exports, {
 });
 module.exports = __toCommonJS(iFrame_exports);
 var import_youtube_player = __toESM(require_dist());
+function isDesktop() {
+  return !("ontouchstart" in window);
+}
 function initPlayer(el, videoId) {
   var _a;
   const player = (0, import_youtube_player.default)(el, {
@@ -854,7 +877,10 @@ function initPlayer(el, videoId) {
     parent == null ? void 0 : parent.dispatchEvent(
       new CustomEvent("player-ready", {
         detail: {
-          play: player.playVideo,
+          play: () => __async(null, null, function* () {
+            yield player.playVideo();
+            isDesktop() && (yield player.unMute());
+          }),
           pause: player.pauseVideo
         }
       })

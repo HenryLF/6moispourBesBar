@@ -1,5 +1,9 @@
 import YouTubePlayer from "youtube-player";
 
+function isDesktop() {
+  return !("ontouchstart" in window);
+}
+
 export function initPlayer(el: HTMLElement, videoId: string) {
   const player = YouTubePlayer(el, {
     videoId,
@@ -15,7 +19,10 @@ export function initPlayer(el: HTMLElement, videoId: string) {
     parent?.dispatchEvent(
       new CustomEvent("player-ready", {
         detail: {
-          play: player.playVideo,
+          play: async () => {
+            await player.playVideo();
+            isDesktop() && (await player.unMute());
+          },
           pause: player.pauseVideo,
         },
       })

@@ -12,7 +12,9 @@
     ></script>
   </head>
   <body
-    x-data="{index:0,
+    x-data="{
+        waitForUserInput : isDesktop(),
+        index:0,
         dark : matchMedia('(prefers-color-scheme: dark)'),
         n : <%=playlist.videos.length%>,
         touchEvent : null,
@@ -37,10 +39,19 @@
     @keyup.window="['ArrowUp' , 'ArrowRight'].includes($event.key) && incrementIndex(1) ;
                   ['ArrowDown' , 'ArrowLeft'].includes($event.key) && incrementIndex(-1) ;"
   >
-    <div
-      id="background"
-      class="absolute h-[100vh] w-[100vw] top-0 left-0 -z-10 opacity-15"
-    ></div>
+    <!-- overlay userinput for autoplay -->
+    <template x-if="waitForUserInput">
+      <div
+        id="background"
+        class="absolute size-full top-0 left-0 z-0 bg-light dark:bg-dark flex flex-col justify-center items-center"
+        @click.window="triggerAnim($el,'touch-area' , ()=>{waitForUserInput = false} , 400)"
+        @keydown.window="waitForUserInput=false"
+      >
+        <h1>Touch to start</h1>
+        <p><%=meta.welcomeText%></p>
+      </div>
+    </template>
+
     <header
       class="w-full motion p-1"
       @mouseover="hidden=false"
@@ -62,51 +73,55 @@
       </section>
     </header>
 
-    <main class="grid grid-cols-10 grid-rows-3 w-full">
-      <div
-        class="col-span-full row-span-1 size-full touch-area"
-        @click="incrementIndex(-1)&&triggerAnim($el,'touch-area')"
-      ></div>
-      <aside
-        class="col-span-1 row-span-1 size-full touch-area"
-        @click="incrementIndex(-1)&&triggerAnim($el,'touch-area') "
-      ></aside>
-      <section class="w-full col-span-8 aspect-video">
-        <% playlist.videos.forEach((video , id) => { %>
-        <template x-if="Math.abs(<%=id%> - index)<2">
-          <div
-            class="size-full"
-            x-data="{player : null }"
-            x-show="index==<%=id%>"
-            x-effect="index==<%=id%> ?  player?.play()  : player?.pause()"
-            x-bind:class="index==<%=id%> && (next ? 'motionNext' : 'motionPrev')"
-            @video-ended="player = $event.detail; incrementIndex(1)"
-            @player-ready="player = $event.detail;
-            index==<%=id%> ?  player.play() : player.pause()"
-          >
+    <!-- video player area -->
+    <template x-if="!waitForUserInput">
+      <main class="grid grid-cols-10 grid-rows-3 w-full">
+        <div
+          class="col-span-full row-span-1 size-full touch-area"
+          @click="incrementIndex(-1)&&triggerAnim($el,'touch-area')"
+        ></div>
+        <aside
+          class="col-span-1 row-span-1 size-full touch-area"
+          @click="incrementIndex(-1)&&triggerAnim($el,'touch-area') "
+        ></aside>
+        <!-- video player -->
+        <section class="w-full col-span-8 aspect-video">
+          <% playlist.videos.forEach((video , id) => { %>
+          <template x-if="Math.abs(<%=id%> - index)<2">
             <div
-              x-init="player = initPlayer($el,'<%=video%>');"
-              x-bind:id="'player<%=id%>'"
               class="size-full"
-            ></div>
-          </div>
-        </template>
-        <% }) %>
-      </section>
-      <aside
-        class="col-span-1 row-span-1 size-full touch-area"
-        @click="incrementIndex(1)&&triggerAnim($el,'touch-area')"
-      ></aside>
-      <div
-        class="col-span-full row-span-1 size-full touch-area"
-        @click="incrementIndex(1)&&triggerAnim($el,'touch-area')"
-      >
-        <h4
-          class="self-end text-right opacity-100"
-          x-text="(index+1) + '/' + n"
-        ></h4>
-      </div>
-    </main>
+              x-data="{player : null }"
+              x-show="index==<%=id%>"
+              x-effect="index==<%=id%> ? await player?.play()  : await player?.pause()"
+              x-bind:class="index==<%=id%> && (next ? 'motionNext' : 'motionPrev')"
+              @video-ended="player = $event.detail; incrementIndex(1)"
+              @player-ready="player = $event.detail;
+            index==<%=id%> ?  await player.play() : await  player.pause()"
+            >
+              <div
+                x-init="player = initPlayer($el,'<%=video%>');"
+                x-bind:id="'player<%=id%>'"
+                class="size-full"
+              ></div>
+            </div>
+          </template>
+          <% }) %>
+        </section>
+        <aside
+          class="col-span-1 row-span-1 size-full touch-area"
+          @click="incrementIndex(1)&&triggerAnim($el,'touch-area')"
+        ></aside>
+        <div
+          class="col-span-full row-span-1 size-full touch-area"
+          @click="incrementIndex(1)&&triggerAnim($el,'touch-area')"
+        >
+          <h4
+            class="self-end text-right opacity-100"
+            x-text="(index+1) + '/' + n"
+          ></h4>
+        </div>
+      </main>
+    </template>
 
     <footer
       class="w-full motion"
@@ -122,10 +137,15 @@
         <h4><%=meta.footer%></h4>
       </section>
     </footer>
+
     <script>
-      function triggerAnim(el, className) {
+      function triggerAnim(el, className, callback = () => {}, timeout = 0) {
         el.classList.remove(className);
         setTimeout(() => el.classList.add(className), 1);
+        setTimeout(callback, timeout);
+      }
+      function isDesktop() {
+        return !("ontouchstart" in window);
       }
     </script>
   </body>
